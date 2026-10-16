@@ -22,6 +22,7 @@
   <property name="java.src.dir"                      value="${src.dir}/java" />
   <property name="rsrc.src.dir"                      value="${src.dir}/resources" />
   <property name="codegen.src.dir"                   value="${src.dir}/codegen" />
+  <property name="beaninfo.src.dir"                  value="${src.dir}/beaninfo" />
   <property name="doc.src.dir"                       value="${src.dir}/doc" />
   <property name="docwebapp.src.dir"                 value="${src.dir}/docweb/docwebapp" />
   <property name="docwebear.src.dir"                 value="${src.dir}/docweb/docwebear" />
@@ -30,6 +31,8 @@
   <property name="build.dir"                         value="build" />
   <property name="build.codegen.dir"                 value="${build.dir}/codegen" />
   <property name="build.classes.dir"                 value="${build.dir}/classes" />
+  <property name="build.beaninfo.classes.dir"        value="${build.dir}/beaninfo-classes" />
+  <property name="build.beaninfo.codegen.dir"        value="${build.dir}/beaninfo-codegen" />
   <property name="build.apidocs.dir"                 value="${build.dir}/apidocs" />
   <property name="build.docwebapp.dir"               value="${build.dir}/docweb/docwebapp" />
   <property name="build.docwebear.dir"               value="${build.dir}/docweb/docwebear" />
@@ -275,7 +278,51 @@
     </javac>
   </target>
 
-  <target name="compile" depends="codegen,compile-common,compile-subst,compile-mgmt" />
+  <!-- explicit BeanInfo classes that hide connection / pooledConnection from JavaBean introspection. -->
+  <!-- the generator runs against the compiled beans and is not itself part of the jar.               -->
+  <target name="beaninfogen" depends="compile-common,compile-subst,compile-mgmt">
+    <mkdir dir="${build.beaninfo.classes.dir}" />
+    <mkdir dir="${build.beaninfo.codegen.dir}" />
+    <javac destdir="${build.beaninfo.classes.dir}" 
+           classpathref="build-classpath" 
+	   source="${jvm.target.version}"
+	   target="${jvm.target.version}"
+           debug="on">
+      <src>
+	<pathelement location="${beaninfo.src.dir}" />
+      </src>
+    </javac>
+    <java classname="com.mchange.v2.c3p0.beaninfo.C3P0BeanInfoGen" fork="true" dir="." failonerror="true">
+      <sysproperty key="com.mchange.v2.log.MLog" value="com.mchange.v2.log.FallbackMLog" />
+      <classpath>
+	<pathelement location="${build.beaninfo.classes.dir}" />
+	<path refid="build-classpath" />
+      </classpath>
+      <arg value="com.mchange.v2.c3p0.DriverManagerDataSource" />
+      <arg value="com.mchange.v2.c3p0.PoolBackedDataSource" />
+      <arg value="com.mchange.v2.c3p0.ComboPooledDataSource" />
+      <arg value="com.mchange.v2.c3p0.WrapperConnectionPoolDataSource" />
+      <arg value="com.mchange.v2.c3p0.JndiRefConnectionPoolDataSource" />
+      <arg value="com.mchange.v2.c3p0.JndiRefForwardingDataSource" />
+      <arg value="com.mchange.v2.c3p0.debug.CloseLoggingComboPooledDataSource" />
+      <arg value="com.mchange.v2.c3p0.debug.ConstructionLoggingComboPooledDataSource" />
+      <arg value="com.mchange.v2.c3p0.debug.AfterCloseLoggingComboPooledDataSource" />
+      <!-- unlike later c3p0 versions, this jar ships the test package, so its serializable DataSource is covered too -->
+      <arg value="com.mchange.v2.c3p0.test.FreezableDriverManagerDataSource" />
+      <arg value="${build.beaninfo.codegen.dir}" />
+    </java>
+    <javac destdir="${build.classes.dir}" 
+           classpathref="build-classpath" 
+	   source="${jvm.target.version}"
+	   target="${jvm.target.version}"
+           debug="on">
+      <src>
+	<pathelement location="${build.beaninfo.codegen.dir}" />
+      </src>
+    </javac>
+  </target>
+
+  <target name="compile" depends="codegen,compile-common,compile-subst,compile-mgmt,beaninfogen" />
 
   <target name="jar" depends="compile">
     <jar destfile="${build.jar.file}">
@@ -612,6 +659,7 @@
      <jar jarfile="${build.sources.jar.file}">
        <fileset dir="${java.src.dir}" includes="**/*.java" />
        <fileset dir="${build.codegen.dir}" includes="**/*.java" />
+       <fileset dir="${build.beaninfo.codegen.dir}" includes="**/*.java" erroronmissingdir="false" />
      </jar>
    </target>
 
