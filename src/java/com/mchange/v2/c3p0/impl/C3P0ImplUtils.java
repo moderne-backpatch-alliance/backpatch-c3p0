@@ -45,6 +45,7 @@ import com.mchange.v2.c3p0.cfg.*;
 
 import com.mchange.v2.csv.*;
 
+import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import com.mchange.lang.ByteUtils;
@@ -472,6 +473,12 @@ public final class C3P0ImplUtils
      */
     public static void assertCompileTimePresenceOfJdbc4_Jdk17Api( NewProxyConnection npc ) throws SQLException
     { npc.getNetworkTimeout(); }
+
+    /**
+     * Call to guard setting and use of JNDI names. Will throw a NamingException if the name is unsupported
+     */
+    public static void jndiAssertNameIsAcceptable(Object jndiName) throws NamingException
+    { JndiNameGuard.assertAcceptableName( jndiName ); }
 
     private C3P0ImplUtils()
     {}
