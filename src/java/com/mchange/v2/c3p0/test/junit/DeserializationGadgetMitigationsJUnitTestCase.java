@@ -111,6 +111,24 @@ public final class DeserializationGadgetMitigationsJUnitTestCase extends TestCas
     }
 
     /**
+     * A bare name (not starting with "java:") should also be rejected by
+     * the default ApparentlyLocalNameGuard.
+     */
+    public void testBareJndiNameRejected() throws Exception
+    {
+        JndiRefConnectionPoolDataSource ds = new JndiRefConnectionPoolDataSource();
+        try
+        {
+            ds.setJndiName( "jdbc/MyDataSource" );
+            fail( "Bare JNDI name (not java: prefixed) should be rejected by default" );
+        }
+        catch ( PropertyVetoException expected )
+        {
+            // expected
+        }
+    }
+
+    /**
      * A local JNDI name (starting with "java:") should be accepted.
      */
     public void testLocalJavaJndiNameAccepted() throws Exception

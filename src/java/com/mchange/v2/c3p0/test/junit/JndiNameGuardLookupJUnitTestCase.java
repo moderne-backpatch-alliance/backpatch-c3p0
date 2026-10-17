@@ -144,10 +144,10 @@ public final class JndiNameGuardLookupJUnitTestCase extends TestCase
 	assertEquals( Arrays.asList( "lookup " + LOCAL_NAME, "lookup " + LOCAL_NAME ), asked );
     }
 
-    public void testRelativeNameIsLookedUp() throws Exception
+    public void testCarriedRelativeNameIsNeverLookedUp() throws Exception
     {
-	use( dataSourceNamed( RELATIVE_NAME ) );
-	assertEquals( Arrays.asList( "lookup " + RELATIVE_NAME, "lookup " + RELATIVE_NAME ), asked );
+	use( dataSourceCarrying( RELATIVE_NAME ) );
+	assertEquals( Collections.emptyList(), asked );
     }
 
     public void testMBeansRefuseRemoteBindNameWithoutTouchingJndi() throws Exception

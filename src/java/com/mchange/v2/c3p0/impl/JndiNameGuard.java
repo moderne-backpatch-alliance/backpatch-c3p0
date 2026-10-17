@@ -53,7 +53,7 @@ abstract class JndiNameGuard
     final static String APPARENTLY_LOCAL_OR_FIRST_COMPONENT_IS_JAVA_IDENTIFIER = "com.mchange.v2.naming.ApparentlyLocalOrFirstComponentIsJavaIdentifierNameGuard";
     final static String ANY_NAME                                               = "com.mchange.v2.naming.AnyNameNameGuard";
 
-    final static String DEFAULT_NAME_GUARD_CLASS_NAME = APPARENTLY_LOCAL_OR_FIRST_COMPONENT_IS_JAVA_IDENTIFIER;
+    final static String DEFAULT_NAME_GUARD_CLASS_NAME = APPARENTLY_LOCAL;
 
     abstract boolean nameIsAcceptable( Name name );
     abstract boolean nameIsAcceptable( String name );
