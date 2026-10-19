@@ -368,7 +368,7 @@ public final class WrapperConnectionPoolDataSource extends WrapperConnectionPool
     {
 	if (className != null)
 	    {
-		ConnectionTester ct = (ConnectionTester) Class.forName( className ).newInstance();
+		ConnectionTester ct = (ConnectionTester) C3P0Registry.instantiateAs( className, ConnectionTester.class, WrapperConnectionPoolDataSource.class.getClassLoader() );
 		this.connectionTester = ct;
 	    }
 	else

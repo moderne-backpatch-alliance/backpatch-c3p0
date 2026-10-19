@@ -173,7 +173,7 @@ public final class C3P0Registry
 		ConnectionTester out = (ConnectionTester) classNamesToConnectionTesters.get( className );
 		if (out == null)
 		{ 
-		    out = (ConnectionTester) Class.forName( className ).newInstance();
+		    out = (ConnectionTester) instantiateAs( className, ConnectionTester.class, C3P0Registry.class.getClassLoader() );
 		    classNamesToConnectionTesters.put( className, out );
 		}
 		return out;
@@ -221,7 +221,7 @@ public final class C3P0Registry
 		    ConnectionCustomizer out = (ConnectionCustomizer) classNamesToConnectionCustomizers.get( className );
 		    if (out == null)
 		    { 
-			out = (ConnectionCustomizer) Class.forName( className ).newInstance();
+			out = (ConnectionCustomizer) instantiateAs( className, ConnectionCustomizer.class, C3P0Registry.class.getClassLoader() );
 			classNamesToConnectionCustomizers.put( className, out );
 		    }
 		    return out;
@@ -237,6 +237,17 @@ public final class C3P0Registry
                 throw SqlUtils.toSQLException( e );
             }
         }
+    }
+
+    // Class names reach here from bean properties a JNDI Reference or a deserialized DataSource can set,
+    // so the type is checked before the class is initialized or instantiated.
+    static Object instantiateAs( String className, Class expectedType, ClassLoader cl )
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException
+    {
+        Class clazz = Class.forName( className, false, cl );
+        if (! expectedType.isAssignableFrom( clazz ))
+            throw new ClassCastException( "Class '" + className + "' is not a " + expectedType.getName() + ", refusing to instantiate it." );
+        return clazz.newInstance();
     }
 
     // must be called from a static sync'ed method

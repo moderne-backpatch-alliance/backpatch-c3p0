@@ -275,7 +275,7 @@ public final class DriverManagerDataSource extends DriverManagerDataSourceBase i
 
 		try 
 		{ 
-		    driver = (Driver) Class.forName( driverClass ).newInstance();
+		    driver = (Driver) C3P0Registry.instantiateAs( driverClass, Driver.class, DriverManagerDataSource.class.getClassLoader() );
 		    this.setDriverClassLoaded( true );
 		}
 		catch (Exception e)
