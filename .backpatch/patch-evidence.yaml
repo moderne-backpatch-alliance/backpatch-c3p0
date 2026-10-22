@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 0.9.5.5.1-backpatch-00001
+release: 0.9.5.5.1-backpatch-00002
 baseline: v0.9.5.5+backpatch.baseline
 fixes:
   - cve: CVE-2026-27830
@@ -10,12 +10,20 @@ fixes:
     basis: adapted
     artifacts:
       - com.mchange:c3p0
-    note: New in this release; adapted onto 0.9.5.5; fixed at 0.9.5.5.1-backpatch-00001 (backpatch-c3p0@82c9011..f137286).
+    note: Carried from 0.9.5.5.1-backpatch-00001.
+  - cve: CVE-2026-55223
+    upstream_fix_url: https://github.com/swaldman/c3p0/commit/7b022c4b6694dabc6204254dc917af9c38f2cb27
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-55223
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-c3p0/commit/92ef452
+    basis: adapted
+    artifacts:
+      - com.mchange:c3p0
+    note: New in this release; adapted onto 0.9.5.5; fixed at 0.9.5.5.1-backpatch-00002 (backpatch-c3p0@92ef452).
 tests:
-  commit: f13728684a61ff9548c7093f6105326b82063931
+  commit: 92ef45205fbe291ad5a3dc21920465e0a58b03f8
   command: "JAVA_HOME=<jdk-8> /bin/bash <alliance>/work/wave2/items/scripts/c3p0-0.9.5.5.sh suite <m2> "
   runtime: Azul Zulu (Java 1.8.0_382), Apache Ant 1.10.14, JUnit Platform Console Launcher 1.10.2, macOS aarch64
-  report: c3p0-0.9.5.5.1-backpatch-00001-tests.zip
-  report_sha256: 1ba019d0dc13fb953e4e4115c42dfed3e12b24d76a4b1c99d7db844406e657d2
+  report: c3p0-0.9.5.5.1-backpatch-00002-tests.zip
+  report_sha256: e68aa2bd10b86605dcca651629a9feaeb340899dee9a61759bc55aca9bb7b8fc
   result: pass
-  note: "the full suite at the tested commit, 33 tests run, 2 failed, each failing at the baseline v0.9.5.5+backpatch.baseline too (the same suite there: 3 run, 2 failed), 0 skipped; the regression tests for CVE-2026-27830 are CreateParseUserOverridesJUnitTestCase, JndiNameGuardLookupJUnitTestCase, UserOverridesAsStringFormatJUnitTestCase"
+  note: "run at fc07c46199d2, whose tree equals this commit's apart from .backpatch/patch-evidence.yaml; the full suite at the tested commit, 35 tests run, 2 failed, each failing at the baseline v0.9.5.5+backpatch.baseline too (the same suite there: 3 run, 2 failed), 0 skipped; the regression tests for CVE-2026-55223 are PerishableConnectionResourcesNotBeanPropertiesJUnitTestCase"
