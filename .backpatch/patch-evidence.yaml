@@ -1,0 +1,21 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 0.9.5.5.1-backpatch-00001
+baseline: v0.9.5.5+backpatch.baseline
+fixes:
+  - cve: CVE-2026-27830
+    upstream_fix_url: https://github.com/swaldman/c3p0/commit/e14cbd8166e423e2e9a9d6f08b2add3433492d6e
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-27830
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-c3p0/compare/82c9011~1...f137286
+    basis: adapted
+    artifacts:
+      - com.mchange:c3p0
+    note: New in this release; adapted onto 0.9.5.5; fixed at 0.9.5.5.1-backpatch-00001 (backpatch-c3p0@82c9011..f137286).
+tests:
+  commit: f13728684a61ff9548c7093f6105326b82063931
+  command: "JAVA_HOME=<jdk-8> /bin/bash <alliance>/work/wave2/batch-4/green-suites/scripts/c3p0-0.9.5.5.sh suite <m2> "
+  runtime: "Azul Zulu (Java 1.8.0_382), Apache Ant 1.10.14, JUnit Platform Console Launcher 1.10.2, H2 1.4.200 in-memory database, macOS aarch64"
+  report: c3p0-0.9.5.5.1-backpatch-00001-tests.zip
+  report_sha256: fea80bd1f8d54a1be95e5569470bf907a6dfe0634a5a81ad252b1bd9cc315862
+  result: pass
+  note: "the full suite at the tested commit, 33 tests run, 0 failed, 0 skipped; the tests connect to an in-memory H2 1.4.200 database (test.jdbc.*, which upstream leaves to the developer's build.properties); the regression tests for CVE-2026-27830 are CreateParseUserOverridesJUnitTestCase, JndiNameGuardLookupJUnitTestCase, UserOverridesAsStringFormatJUnitTestCase"
