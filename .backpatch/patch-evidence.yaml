@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 0.9.5.5.1-backpatch-00002
+release: 0.9.5.5.1-backpatch-00003
 baseline: v0.9.5.5+backpatch.baseline
 fixes:
   - cve: CVE-2026-27830
@@ -14,16 +14,24 @@ fixes:
   - cve: CVE-2026-55223
     upstream_fix_url: https://github.com/swaldman/c3p0/commit/7b022c4b6694dabc6204254dc917af9c38f2cb27
     advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-55223
-    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-c3p0/commit/92ef452
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-c3p0/compare/92ef452~1...6a803cf
     basis: adapted
     artifacts:
       - com.mchange:c3p0
-    note: New in this release; adapted onto 0.9.5.5; fixed at 0.9.5.5.1-backpatch-00002 (backpatch-c3p0@92ef452).
+    note: Carried from 0.9.5.5.1-backpatch-00002.
+  - cve: CVE-2026-55153
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-55153
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-c3p0/commit/90140db
+    not_applicable_rationale: a provider-developed fix; no upstream-authored code to credit
+    basis: original
+    artifacts:
+      - com.mchange:c3p0
+    note: New in this release; written for 0.9.5.5; fixed at 0.9.5.5.1-backpatch-00003 (backpatch-c3p0@90140db).
 tests:
-  commit: 92ef45205fbe291ad5a3dc21920465e0a58b03f8
-  command: "JAVA_HOME=<jdk-8> /bin/bash <alliance>/work/wave2/items/scripts/c3p0-0.9.5.5.sh suite <m2> "
-  runtime: Azul Zulu (Java 1.8.0_382), Apache Ant 1.10.14, JUnit Platform Console Launcher 1.10.2, macOS aarch64
-  report: c3p0-0.9.5.5.1-backpatch-00002-tests.zip
-  report_sha256: e68aa2bd10b86605dcca651629a9feaeb340899dee9a61759bc55aca9bb7b8fc
+  commit: 795785104e9ab9c8f84d1f538adaf60d48e6d6e3
+  command: "JAVA_HOME=<jdk-8> /bin/bash <alliance>/work/wave2/batch-4/green-suites/scripts/c3p0-0.9.5.5.sh suite <m2> "
+  runtime: "Azul Zulu (Java 1.8.0_382), Apache Ant 1.10.14, JUnit Platform Console Launcher 1.10.2, H2 1.4.200 in-memory database, macOS aarch64"
+  report: c3p0-0.9.5.5.1-backpatch-00003-tests.zip
+  report_sha256: 6e58ce99af3f7da7f66bd30c85941c4636db9d6177abf76acfaab590c3ed7e94
   result: pass
-  note: "run at fc07c46199d2, whose tree equals this commit's apart from .backpatch/patch-evidence.yaml; the full suite at the tested commit, 35 tests run, 2 failed, each failing at the baseline v0.9.5.5+backpatch.baseline too (the same suite there: 3 run, 2 failed), 0 skipped; the regression tests for CVE-2026-55223 are PerishableConnectionResourcesNotBeanPropertiesJUnitTestCase"
+  note: "the full suite at the tested commit, 43 tests run, 0 failed, 0 skipped; the tests connect to an in-memory H2 1.4.200 database (test.jdbc.*, which upstream leaves to the developer's build.properties); the regression tests for CVE-2026-55153 are ClassNamePropertyTypeCheckJUnitTestCase"
